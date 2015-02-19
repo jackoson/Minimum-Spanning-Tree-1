@@ -20,6 +20,6 @@ class SpanningTree{
 		for(Edge e :g.edges()){
 			sum = sum + e.weight();
 		}
-		return String.format("%f.2", sum);
+		return String.format("%.2f", sum);
 	}
 }
