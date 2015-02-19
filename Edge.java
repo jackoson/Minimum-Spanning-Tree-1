@@ -62,6 +62,20 @@ public class Edge {
 		return type;
 	}
 	
+	public boolean isLocalRoad()
+	{
+		return (this.type == EdgeType.LocalRoad);
+	}
+	
+	public boolean isMainRoad()
+	{
+		return (this.type == EdgeType.MainRoad);
+	}
+	
+	public boolean isUnderground()
+	{
+		return (this.type == EdgeType.Underground);
+	}
 	
 	/**
 	 * Class constructor. All of the information about the edge is set in 
@@ -78,7 +92,6 @@ public class Edge {
 		this.weight = weight;
 		this.type = type;
 	}
-	
 	
 	@Override
 	public String toString() {
