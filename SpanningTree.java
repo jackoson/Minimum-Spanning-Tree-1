@@ -1,7 +1,7 @@
 import java.io.*;
 
 class SpanningTree{
-	
+
 	public static void main(String[] args){
 		Reader r = new Reader();
 		try{
@@ -9,9 +9,15 @@ class SpanningTree{
 		
 			if(args[0].equals("-p1")){
 				System.out.println("Total Cable Needed: " + String.format("%.2f", totalEdgeWeight(r.graph())) + "m");
+			}else if(args[0].equals("-p2")){
+				System.out.println("Price: " + String.format("%.2f", getPrice(r.graph())));
+				System.out.println("Hours of Disrupted Travel: " + String.format("%.2f", getHours(r.graph())) + "h");
+				System.out.println("Completion Date: 15th February 2014 00:00 + " + String.format("%.2f", getDate(r.graph())) + "days");
+				System.out.println("THIS IS PETER FROM THE PAST, CONVERT ABOVE USING DATEFORMAT PLEASE, THANKS");
 			}
+
 		}catch(IOException e){
-			System.err.println("Wrong Filename idiot");
+			System.err.println("Wrong Filename Idiot");
 		}
 	}
 	
@@ -22,4 +28,46 @@ class SpanningTree{
 		}
 		return sum;
 	}
-}
+
+	private static double getPrice(Graph g){
+		double sum = 0;
+		for(Edge e :g.edges()){
+			if(e.type() == LocalRoad){
+				sum = sum + 5000 + (4500*e.weight());
+			}else if(e.type() == MainRoad){
+				sum = sum + (4000*e.weight()); 
+			}else if(e.type() == Underground){
+				sum = sum + (1000*e.weight());
+			}
+		}
+		return sum;
+	}
+
+	private static double getHours(Graph g){
+		double sum = 0;
+		for(Edge e :g.edges()){
+			if(e.type() == EdgeType.LocalRoad){
+				sum = sum + (0.2*e.weight());
+			}else if(e.type() == MainRoad){
+				sum = sum + (0.5*e.weight()); 
+			}else if(e.type() == Underground){
+				sum = sum + (1*e.weight());
+			}
+		}
+		return sum;
+	}
+	
+	private static double getDate(Graph g){
+		double sum = 0;
+		for(Edge e :g.edges()){
+			if(e.type() == LocalRoad){
+				sum = sum + (0.2*e.weight());
+			}else if(e.type() == MainRoad){
+				sum = sum + (0.6*e.weight()); 
+			}else if(e.type() == Underground){
+				sum = sum + (0.9*e.weight());
+			}
+		}
+		return sum;
+	}
+}		
