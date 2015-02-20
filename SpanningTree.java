@@ -22,14 +22,7 @@ class SpanningTree{
 				System.out.println("Price: " + String.format("%.2f", totalEdgeWeight(getPrimMST(getPrice(r.graph())))));
 				System.out.println("Hours of Disrupted Travel: " + String.format("%.2f", totalEdgeWeight(getPrimMST(getHours(r.graph())))) + "h");
 				System.out.println("Completion Date: " + d.format(getDate(totalEdgeWeight(getPrimMST(getDays(r.graph()))))));
-			}
-
-			System.out.println(totalEdgeWeight(getPrimMST(getDays(r.graph()))));
-			System.out.println(totalEdgeWeight(getDays(r.graph())));
-			
-			Writer w = new Writer();
-			w.graph(getPrimMST(getPrice(r.graph())));
-			w.write("test.txt");
+			}	
 			
 		}catch(IOException e){
 			System.err.println("Wrong Filename Idiot");
@@ -86,13 +79,11 @@ class SpanningTree{
 	
 	private static Date getDate(double sum){
 		
-		int days = (int)sum;
-		Date d = new Date(2014 - 1900, 1, 15+days);
-		double hours = (sum - days)*24;
-		d.setHours((int)hours);
-		double minutes = (hours - (int)hours)*60;
-		d.setMinutes((int)minutes);
-		return d;
+		Date date = new Date(2014 - 1900, 1, 15);
+		
+		date.setTime((long) (date.getTime()+(sum*24*60*60*1000)));
+		
+		return date;
 		
 	}
 	
