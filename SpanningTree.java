@@ -8,10 +8,10 @@ class SpanningTree{
 		Reader r = new Reader();
 		try{
 			r.read(args[1]);
-			SimpleDateFormat d = new SimpleDateFormat("EEEEEEEEEEEE dd MMMMMMMMMMMMMM yyyy HH:mm");
+			SimpleDateFormat d = new SimpleDateFormat("EEE d MMMMMMMMMMMMMM yyyy HH:mm");
 		
 			if(args[0].equals("-p1")){
-				System.out.println("Total Cable Needed: " + String.format("%.2f", totalEdgeWeight(r.graph())) + "m");
+				System.out.println("Total Cable Needed: " + String.format("%.2f", 1000*totalEdgeWeight(r.graph())) + "m");
 			}else if(args[0].equals("-p2")){
 				System.out.println("Price: " + String.format("%.2f", totalEdgeWeight(getPrice(r.graph()))));
 				System.out.println("Hours of Disrupted Travel: " + String.format("%.2f", totalEdgeWeight(getHours(r.graph()))) + "h");
@@ -28,7 +28,7 @@ class SpanningTree{
 		for(Edge e :g.edges()){
 			sum = sum + e.weight();
 		}
-		return sum*1000;
+		return sum;
 	}
 
 	private static Graph getPrice(Graph g){
@@ -71,6 +71,7 @@ class SpanningTree{
 		return NewGraph;
 	}
 	
+	
 	private static Date getDate(Graph g){
 		
 		double sum = totalEdgeWeight(getDays(g));
@@ -78,7 +79,7 @@ class SpanningTree{
 		int days = (int)sum;
 		Date d = new Date(2014 - 1900, 1, 15+days);
 		double hours = (sum - days)*24;
-		d.setHours((int)hours);
+		d.setHours((int)hours + 1);
 		double minutes = (hours - (int)hours)*60;
 		d.setMinutes((int)minutes);
 		return d;
@@ -93,11 +94,11 @@ class SpanningTree{
 	
 		for(Edge e :g.edges()){
 			if(e.isLocalRoad()){
-				NewGraph.add(new Edge(e.id1(), e.id2(), (0.2*e.weight()), e.type()));
+				NewGraph.add(new Edge(e.id1(), e.id2(), (e.weight()/0.2), e.type()));
 			}else if(e.isMainRoad()){
-				NewGraph.add(new Edge(e.id1(), e.id2(),(0.6*e.weight()), e.type()));
+				NewGraph.add(new Edge(e.id1(), e.id2(),(e.weight()/0.6), e.type()));
 			}else if(e.isUnderground()){
-				NewGraph.add(new Edge(e.id1(), e.id2(),(0.9*e.weight()), e.type()));
+				NewGraph.add(new Edge(e.id1(), e.id2(),(e.weight()/0.9), e.type()));
 			}
 		}
 		return NewGraph;
