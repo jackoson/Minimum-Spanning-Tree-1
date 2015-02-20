@@ -3,6 +3,8 @@ import java.util.*;
 import java.text.*;
 
 class SpanningTree{
+	
+	static Comparator comp;
 
 	public static void main(String[] args){
 		Reader r = new Reader();
@@ -15,9 +17,20 @@ class SpanningTree{
 			}else if(args[0].equals("-p2")){
 				System.out.println("Price: " + String.format("%.2f", totalEdgeWeight(getPrice(r.graph()))));
 				System.out.println("Hours of Disrupted Travel: " + String.format("%.2f", totalEdgeWeight(getHours(r.graph()))) + "h");
-				System.out.println("Completion Date: " + d.format(getDate(r.graph())));
+				System.out.println("Completion Date: " + d.format(getDate(totalEdgeWeight(getDays(r.graph())))));
+			}else if(args[0].equals("-p3")){
+				System.out.println("Price: " + String.format("%.2f", totalEdgeWeight(getPrimMST(getPrice(r.graph())))));
+				System.out.println("Hours of Disrupted Travel: " + String.format("%.2f", totalEdgeWeight(getPrimMST(getHours(r.graph())))) + "h");
+				System.out.println("Completion Date: " + d.format(getDate(totalEdgeWeight(getPrimMST(getDays(r.graph()))))));
 			}
 
+			System.out.println(totalEdgeWeight(getPrimMST(getDays(r.graph()))));
+			System.out.println(totalEdgeWeight(getDays(r.graph())));
+			
+			Writer w = new Writer();
+			w.graph(getPrimMST(getPrice(r.graph())));
+			w.write("test.txt");
+			
 		}catch(IOException e){
 			System.err.println("Wrong Filename Idiot");
 		}
@@ -71,18 +84,16 @@ class SpanningTree{
 		return NewGraph;
 	}
 	
-	
-	private static Date getDate(Graph g){
-		
-		double sum = totalEdgeWeight(getDays(g));
+	private static Date getDate(double sum){
 		
 		int days = (int)sum;
 		Date d = new Date(2014 - 1900, 1, 15+days);
 		double hours = (sum - days)*24;
-		d.setHours((int)hours + 1);
+		d.setHours((int)hours);
 		double minutes = (hours - (int)hours)*60;
 		d.setMinutes((int)minutes);
 		return d;
+		
 	}
 	
 	private static Graph getDays(Graph g){
@@ -104,25 +115,49 @@ class SpanningTree{
 		return NewGraph;
 	}
 	
-	private Graph getPrimMST(Graph g){
+	private static Graph getPrimMST(Graph g){
+		
+		comp = new Comparator(){
+
+			@Override
+			public int compare(Object o1, Object o2) {
+				double one = ((Edge) o1).weight();
+				double two = ((Edge) o2).weight();
+				return Double.compare(one, two);
+			}
+		};
 		
 		Graph newG = new Graph();
-		Node CurrentNode = g.nodes().iterator().next();
-		newG.add(CurrentNode);
+		List<Edge> sortedEdges = new ArrayList<Edge>(g.edges());
+		Collections.sort(sortedEdges, comp);
 		
-		Hashtable<Node, Edge> D = new Hashtable<Node, Edge>();
+		Edge firstEdge = sortedEdges.iterator().next();
+		newG.add(firstEdge);
+		newG.add(g.find(firstEdge.id1()));
+		newG.add(g.find(firstEdge.id2()));
 		
-		/*while(){
-			calculateD(D);
-		}*/
+		sortedEdges.remove(firstEdge);
 		
-		return newG;
-		
+		while(!newG.nodes().equals(g.nodes())){
+			
+			for(Edge e: sortedEdges){
+				if( (newG.find(e.id1()) != null) && (newG.find(e.id2()) != null) ){
+					sortedEdges.remove(e);
+					break;
+				}else if(newG.find(e.id1()) != null){
+					newG.add(e);
+					newG.add(g.find(e.id2()));
+					sortedEdges.remove(e);
+					break;
+				}else if(newG.find(e.id2()) != null){
+					newG.add(e);
+					newG.add(g.find(e.id1()));
+					sortedEdges.remove(e);
+					break;
+				}
+			}	
+		}
+			
+		return newG;	
 	}
-
-	private void calculateD(Hashtable<Node, Edge> d) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-}		
+}
