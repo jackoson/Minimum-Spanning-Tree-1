@@ -93,6 +93,8 @@ public class Edge {
 		this.type = type;
 	}
 	
+	
+	
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
