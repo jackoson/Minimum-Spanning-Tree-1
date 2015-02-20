@@ -28,7 +28,7 @@ class SpanningTree{
 		for(Edge e :g.edges()){
 			sum = sum + e.weight();
 		}
-		return sum;
+		return sum*1000;
 	}
 
 	private static Graph getPrice(Graph g){
@@ -106,9 +106,21 @@ class SpanningTree{
 	private Graph getPrimMST(Graph g){
 		
 		Graph newG = new Graph();
-		newG.add(g.nodes().iterator().next());
+		Node CurrentNode = g.nodes().iterator().next();
+		newG.add(CurrentNode);
+		
+		Hashtable<Node, Edge> D = new Hashtable<Node, Edge>();
+		
+		/*while(){
+			calculateD(D);
+		}*/
 		
 		return newG;
+		
+	}
+
+	private void calculateD(Hashtable<Node, Edge> d) {
+		// TODO Auto-generated method stub
 		
 	}
 	
